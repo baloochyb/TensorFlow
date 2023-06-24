@@ -101,3 +101,39 @@ import tensorflow as tf
 # # 10x3 matrix, we'll concatenate them along dimension 1.
 # resulting_matrix = tf.concat(values=[dice1, dice2, dice_sum], axis=1)
 # print(resulting_matrix)
+
+# 1-D tensor
+# t5 = tf.constant([2, 11, 5, 42, 7, 19, -6, -11, 29])
+# i = tf.argmax(input=t5)
+# print('index of max; ', i)
+# print('Max element: ',t5[i].numpy())
+# i = tf.argmin(input=t5, axis=0).numpy()
+# print('index of min: ', i)
+# print('Min element: ',t5[i].numpy())
+# t6 = tf.reshape(t5, [3,3])
+# print(t6)
+# i = tf.argmax(input=t6,axis=0).numpy() # max arg down rows
+# print('indices of max down rows; ', i)
+# i = tf.argmin(input=t6,axis=0).numpy() # min arg down rows
+# print('indices of min down rows ; ',i)
+# print(t6)
+# i = tf.argmax(input=t6,axis=1).numpy() # max arg across cols
+# print('indices of max across cols: ',i)
+# i = tf.argmin(input=t6,axis=1).numpy() # min arg across cols
+# print('indices of min across cols: ',i)
+
+# variable = tf.Variable([[1,3,5,7],[11,13,17,19]])
+# checkpoint = tf.train.Checkpoint(var=variable)
+# save_path = checkpoint.save('./vars')
+# variable.assign([[0,0,0,0],[0,0,0,0]])
+# print(variable)
+# checkpoint.restore(save_path)
+# print(variable)
+
+def f1(x, y):
+    return tf.reduce_mean(input_tensor=tf.multiply(x ** 2, 5) + y**2)
+f2 = tf.function(f1)
+x = tf.constant([4., -5.])
+y = tf.constant([2., 3.])
+# f1 and f2 return the same value, but f2 executes as a TensorFlow graph
+assert f1(x,y).numpy() == f2(x,y).numpy(), f"Error in your assumption, got: {f1(x,y).numpy(), f2(x,y).numpy()}"
