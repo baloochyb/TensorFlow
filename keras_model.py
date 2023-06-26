@@ -1,4 +1,5 @@
 import tensorflow as tf
+from tensorflow.python.keras.models import load_model
 # from tensorflow.python.keras import backend as k
 
 # print(tf.keras.__version__)
@@ -80,3 +81,27 @@ print(steps_per_epoch)
 model4.compile (optimizer= tf.keras.optimizers.Adam(), loss='sparse_categorical_crossentropy', metrics = ['accuracy'])
 model4.fit(train_x, train_y, batch_size=batch_size, epochs=epochs)
 model4.evaluate(test_x, test_y)
+
+# data pipelines -----------------------------------------------------------------------
+
+batch_size = 32
+buffer_size = 10000
+train_dataset = tf.data.Dataset.from_tensor_slices((train_x, train_y)).batch(batch_size).shuffle(buffer_size)
+train_dataset = train_dataset.map(lambda x, y: (tf.image.random_flip_left_right(x), y))
+train_dataset = train_dataset.repeat()
+
+test_dataset = tf.data.Dataset.from_tensor_slices((test_x, test_y)).batch(batch_size).shuffle(buffer_size)
+test_dataset = train_dataset.repeat()
+
+steps_per_epoch = len(train_x)//batch_size # required because of the repeat on the dataset
+optimiser = tf.keras.optimizers.Adam()
+model4.compile (optimizer= optimiser, loss='sparse_categorical_crossentropy', metrics = ['accuracy'])
+model4.fit(train_dataset, batch_size=batch_size, epochs=epochs, steps_per_epoch=steps_per_epoch)
+
+# Saving and loading Keras models
+
+model4.save('./model_name.h5')
+new_model = load_model('./model_name.h5')
+
+model3.save_weights('./model_weights.h5')
+model3.load_weights('./model_weights.h5')
