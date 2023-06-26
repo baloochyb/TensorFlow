@@ -49,6 +49,34 @@ inputs = tf.keras.Input(shape=(28,28)) # Returns a 'placeholder' tensor
 x = tf.keras.layers.Flatten()(inputs)
 x = tf.keras.layers.Dense(512, activation='relu',name='d1')(x)
 x = tf.keras.layers.Dropout(0.2)(x)
-predictions = tf.keras.layers.Dense(10,activation=tf.nn.softmax,
-name='d2')(x)
+predictions = tf.keras.layers.Dense(10,activation=tf.nn.softmax, name='d2')(x)
 model3 = tf.keras.Model(inputs=inputs, outputs=predictions)
+
+# Subclassing the Keras Model ---------------------------------------------------------
+
+class MyModel(tf.keras.Model):
+    def __init__(self, num_classes=10):
+        super(MyModel, self).__init__()
+    # Define your layers here.
+        inputs = tf.keras.Input(shape=(28,28)) # Returns a placeholder tensor
+        self.x0 = tf.keras.layers.Flatten()
+        self.x1 = tf.keras.layers.Dense(512, activation='relu',name='d1')
+        self.x2 = tf.keras.layers.Dropout(0.2)
+        self.predictions = tf.keras.layers.Dense(10,activation=tf.nn.softmax, name='d2')
+    def call(self, inputs):
+    # This is where to define your forward pass
+    # using the layers previously defined in `__init__`
+        x = self.x0(inputs)
+        x = self.x1(x)
+        x = self.x2(x)
+        return self.predictions(x)
+
+model4 = MyModel()
+
+model4 = MyModel()
+batch_size = 32
+steps_per_epoch = len(train_x.numpy())//batch_size
+print(steps_per_epoch)
+model4.compile (optimizer= tf.keras.optimizers.Adam(), loss='sparse_categorical_crossentropy', metrics = ['accuracy'])
+model4.fit(train_x, train_y, batch_size=batch_size, epochs=epochs)
+model4.evaluate(test_x, test_y)
