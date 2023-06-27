@@ -16,7 +16,7 @@ train_y, test_y = tf.cast(train_y,tf.int64), tf.cast(test_y,tf.int64)
 # Build Model (First Method) --------------------------------------------------------
 
 model1 = tf.keras.models.Sequential([
-    tf.keras.layers.Flatten(),
+    tf.keras.layers.Flatten(input_shape=(28, 28)),
     tf.keras.layers.Dense(512, activation=tf.nn.relu),
     tf.keras.layers.Dropout(0.2),
     tf.keras.layers.Dense(10, activation=tf.nn.softmax)
